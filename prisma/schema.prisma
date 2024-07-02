@@ -12,3 +12,98 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        Int          @id @default(autoincrement())
+  username  String
+  email     String
+  password  String
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  answers   UserAnswer[]
+  results   UserResult[]
+
+  @@map("users")
+}
+
+model UserAnswer {
+  id              Int     @id @default(autoincrement())
+  userId          Int     @map("user_id")
+  symptomId       Int     @map("symptom_id")
+  answer          Boolean
+  certaintyFactor Float   @default(0.0)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user    User    @relation(fields: [userId], references: [id])
+  symptom Symptom @relation(fields: [symptomId], references: [id])
+
+  @@map("user_answers")
+}
+
+model UserResult {
+  id     Int @id @default(autoincrement())
+  userId Int @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  certainties UserResultCertainty[]
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("user_results")
+}
+
+model Symptom {
+  id               Int               @id @default(autoincrement())
+  description      String
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  answers          UserAnswer[]
+  diagnoseSymptoms DiagnoseSymptom[]
+
+  @@map("symptoms")
+}
+
+model Diagnosis {
+  id               Int                   @id @default(autoincrement())
+  name             String
+  solution         String
+  diagnoseHeaderId Int                   @map("diagnose_header_id")
+  createdAt        DateTime              @default(now()) @map("created_at")
+  updatedAt        DateTime              @updatedAt @map("updated_at")
+  symptoms         DiagnoseSymptom[]
+  certainties      UserResultCertainty[]
+
+  @@map("diagnoses")
+}
+
+model DiagnoseSymptom {
+  id              Int      @id @default(autoincrement())
+  diagnoseId      Int      @map("diagnose_id")
+  symptomId       Int      @map("symptom_id")
+  certaintyFactor Float    @default(0.0)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  diagnosis Diagnosis @relation(fields: [diagnoseId], references: [id])
+  symptom   Symptom   @relation(fields: [symptomId], references: [id])
+
+  @@map("diagnose_symptoms")
+}
+
+model UserResultCertainty {
+  id           Int      @id @default(autoincrement())
+  userResultId Int      @map("user_result_id")
+  diagnoseId   Int      @map("diagnose_id")
+  certainty    Float
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  userResult UserResult @relation(fields: [userResultId], references: [id])
+  diagnosis  Diagnosis  @relation(fields: [diagnoseId], references: [id])
+
+  @@map("user_results_certainties")
+}
