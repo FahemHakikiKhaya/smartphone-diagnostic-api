@@ -67,15 +67,15 @@ model Symptom {
   @@map("symptoms")
 }
 
-model Diagnosis {
-  id               Int                   @id @default(autoincrement())
-  name             String
-  solution         String
-  diagnoseHeaderId Int                   @map("diagnose_header_id")
-  createdAt        DateTime              @default(now()) @map("created_at")
-  updatedAt        DateTime              @updatedAt @map("updated_at")
-  symptoms         DiagnoseSymptom[]
-  certainties      UserResultCertainty[]
+model Diagnose {
+  id          Int                   @id @default(autoincrement())
+  name        String
+  solution    String
+  code        String                @unique
+  createdAt   DateTime              @default(now()) @map("created_at")
+  updatedAt   DateTime              @updatedAt @map("updated_at")
+  symptoms    DiagnoseSymptom[]
+  certainties UserResultCertainty[]
 
   @@map("diagnoses")
 }
@@ -88,8 +88,8 @@ model DiagnoseSymptom {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  diagnosis Diagnosis @relation(fields: [diagnoseId], references: [id])
-  symptom   Symptom   @relation(fields: [symptomId], references: [id])
+  diagnose Diagnose @relation(fields: [diagnoseId], references: [id])
+  symptom  Symptom  @relation(fields: [symptomId], references: [id])
 
   @@map("diagnose_symptoms")
 }
@@ -103,7 +103,7 @@ model UserResultCertainty {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   userResult UserResult @relation(fields: [userResultId], references: [id])
-  diagnosis  Diagnosis  @relation(fields: [diagnoseId], references: [id])
+  diagnose   Diagnose   @relation(fields: [diagnoseId], references: [id])
 
   @@map("user_results_certainties")
 }
