@@ -13,7 +13,7 @@ export class PaginationService {
     return {
       page,
       take,
-      totalPages: totalPages,
+      total,
     };
   }
 }

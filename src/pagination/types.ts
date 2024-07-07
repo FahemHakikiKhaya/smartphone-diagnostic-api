@@ -11,5 +11,5 @@ export interface PaginationResponse<T> {
 export interface PaginationMeta {
   page: number;
   take: number;
-  totalPages: number;
+  total: number;
 }

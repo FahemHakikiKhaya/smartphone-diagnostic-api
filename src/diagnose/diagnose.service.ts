@@ -52,10 +52,25 @@ export class DiagnoseService {
   async getDiagnoses(
     query: GetDiagnosesDTO,
   ): Promise<PaginationResponse<Diagnose>> {
-    const { page, take } = query;
+    const { page, take, search } = query;
     const whereClause: Prisma.DiagnoseWhereInput = {};
 
-    console.log({ query });
+    if (search) {
+      whereClause.OR = [
+        {
+          code: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          name: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
 
     const [diagnoses, count] = await this.PrismaService.$transaction([
       this.PrismaService.diagnose.findMany({
