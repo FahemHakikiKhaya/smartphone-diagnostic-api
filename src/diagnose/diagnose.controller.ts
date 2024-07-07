@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { UpsertDiagnoseDTO } from './dto/upsert-diagnose.dto';
 import { DiagnoseService } from './diagnose.service';
 import { GetDiagnosesDTO } from './dto/get-diagnoses.dto';

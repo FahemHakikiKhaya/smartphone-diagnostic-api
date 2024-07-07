@@ -93,6 +93,7 @@ model DiagnoseSymptom {
   diagnose Diagnose @relation(fields: [diagnoseId], references: [id])
   symptom  Symptom  @relation(fields: [symptomId], references: [id])
 
+  @@unique([symptomId, diagnoseId])
   @@map("diagnose_symptoms")
 }
 

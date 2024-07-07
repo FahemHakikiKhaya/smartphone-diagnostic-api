@@ -52,7 +52,7 @@ export class SymptomService {
   async getSymptoms(
     query: GetSymptomsDTO,
   ): Promise<PaginationResponse<Symptom>> {
-    const { page, take, search } = query;
+    const { page, take, search, all = false } = query;
     const whereClause: Prisma.SymptomWhereInput = {};
 
     if (search) {
@@ -75,8 +75,7 @@ export class SymptomService {
     const [symptoms, count] = await this.prismaService.$transaction([
       this.prismaService.symptom.findMany({
         where: whereClause,
-        skip: (page - 1) * take,
-        take,
+        ...(!all && { skip: (page - 1) * take, take }),
       }),
       this.prismaService.symptom.count({
         where: whereClause,
