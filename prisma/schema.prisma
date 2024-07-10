@@ -11,6 +11,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -20,7 +21,6 @@ model User {
   password  String
   createdAt DateTime     @default(now()) @map("created_at")
   updatedAt DateTime     @updatedAt @map("updated_at")
-  answers   UserAnswer[]
   results   UserResult[]
 
   @@map("users")
@@ -28,16 +28,16 @@ model User {
 
 model UserAnswer {
   id              Int     @id @default(autoincrement())
-  userId          Int     @map("user_id")
   symptomId       Int     @map("symptom_id")
   answer          Boolean
-  certaintyFactor Float   @default(0.0)
+  certaintyFactor Float?  @default(0.0)
+  userResultId    Int?    @map("user_result_id") // Foreign key to UserResult
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  user    User    @relation(fields: [userId], references: [id])
-  symptom Symptom @relation(fields: [symptomId], references: [id])
+  symptom    Symptom     @relation(fields: [symptomId], references: [id])
+  UserResult UserResult? @relation(fields: [userResultId], references: [id])
 
   @@map("user_answers")
 }
@@ -50,6 +50,7 @@ model UserResult {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   certainties UserResultCertainty[]
+  answers     UserAnswer[]
 
   user User @relation(fields: [userId], references: [id])
 
