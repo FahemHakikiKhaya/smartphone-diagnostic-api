@@ -40,7 +40,7 @@ export class UserResultService {
 
     const newUserResult = await this.PrismaService.userResult.create({
       data: {
-        userId: 1,
+        userId: body.userId,
         answers: {
           createMany: {
             data: body.userAnswers,

@@ -17,8 +17,9 @@ datasource db {
 model User {
   id        Int          @id @default(autoincrement())
   username  String
-  email     String
+  email     String       @unique
   password  String
+  isAdmin   Boolean?     @default(false)
   createdAt DateTime     @default(now()) @map("created_at")
   updatedAt DateTime     @updatedAt @map("updated_at")
   results   UserResult[]
@@ -31,7 +32,7 @@ model UserAnswer {
   symptomId       Int     @map("symptom_id")
   answer          Boolean
   certaintyFactor Float?  @default(0.0)
-  userResultId    Int?    @map("user_result_id") // Foreign key to UserResult
+  userResultId    Int?    @map("user_result_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -73,6 +74,7 @@ model Symptom {
 model Diagnose {
   id          Int                   @id @default(autoincrement())
   name        String
+  description String                @default("")
   solution    String
   code        String                @unique
   createdAt   DateTime              @default(now()) @map("created_at")
