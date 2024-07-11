@@ -29,6 +29,7 @@ export class UserResultService {
       });
 
       const certainty = countTrueAnswers / symptoms.length;
+
       const formattedCertainty = Math.round(certainty * 100) / 100;
 
       return {
@@ -54,5 +55,34 @@ export class UserResultService {
     });
 
     return newUserResult;
+  }
+
+  async getUserResult(id: number) {
+    const userResult = await this.PrismaService.userResult.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        answers: {
+          include: {
+            symptom: true,
+          },
+        },
+        certainties: {
+          include: {
+            diagnose: true,
+          },
+        },
+      },
+    });
+
+    const highestCertainty = userResult.certainties.reduce(
+      (max, item) => (item.certainty > max.certainty ? item : max),
+      userResult.certainties[0],
+    );
+
+    userResult.certainties = [highestCertainty];
+
+    return userResult;
   }
 }
