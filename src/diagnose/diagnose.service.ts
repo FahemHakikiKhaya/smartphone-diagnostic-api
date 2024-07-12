@@ -21,7 +21,6 @@ export class DiagnoseService {
       },
     });
 
-    // Extract the number from the latest code if it exists, else start with 1
     let nextNumber = 1;
     if (latestDiagnose && latestDiagnose.code) {
       const latestNumber = parseInt(latestDiagnose.code.replace('DN', ''), 10);
@@ -37,11 +36,13 @@ export class DiagnoseService {
       },
       update: {
         name: body.name,
+        description: body.description,
         solution: body.solution,
       },
       create: {
         code: newCode,
         name: body.name,
+        description: body.description,
         solution: body.solution,
       },
     });

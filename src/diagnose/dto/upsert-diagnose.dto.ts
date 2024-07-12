@@ -7,6 +7,10 @@ export class UpsertDiagnoseDTO {
 
   @IsNotEmpty()
   @IsString()
+  readonly description: string;
+
+  @IsNotEmpty()
+  @IsString()
   readonly solution: string;
 
   @IsOptional()
