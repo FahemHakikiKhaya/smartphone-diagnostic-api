@@ -85,4 +85,30 @@ export class UserResultService {
 
     return userResult;
   }
+
+  async getUserResults() {
+    const userResults = await this.PrismaService.userResult.findMany({
+      include: {
+        user: true,
+        certainties: {
+          include: {
+            diagnose: true,
+          },
+        },
+      },
+    });
+
+    const processedResults = userResults.map((userResult) => {
+      const highestCertainty = userResult.certainties.reduce(
+        (max, item) => (item.certainty > max.certainty ? item : max),
+        userResult.certainties[0],
+      );
+
+      userResult.certainties = [highestCertainty];
+
+      return userResult;
+    });
+
+    return processedResults;
+  }
 }

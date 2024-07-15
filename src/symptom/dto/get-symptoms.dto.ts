@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { PaginationQueryParams } from 'src/pagination/dto/pagination.dto';
 
 export class GetSymptomsDTO extends PaginationQueryParams {
@@ -7,6 +7,6 @@ export class GetSymptomsDTO extends PaginationQueryParams {
   @IsString()
   readonly search: string;
 
-  @Transform(({ value }) => Boolean(value === 'true'))
+  @IsBoolean()
   readonly all: boolean;
 }

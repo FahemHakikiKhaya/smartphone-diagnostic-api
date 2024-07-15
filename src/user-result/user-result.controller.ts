@@ -14,4 +14,9 @@ export class UserResultController {
   async getUserResult(@Param('id') id: number) {
     return await this.userResultService.getUserResult(id);
   }
+
+  @Get('/')
+  async getUserResults() {
+    return await this.userResultService.getUserResults();
+  }
 }
